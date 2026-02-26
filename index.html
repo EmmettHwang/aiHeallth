@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthShorts AI — 나만의 건강 코칭 숏츠 플랫폼</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ===================== SPLASH / ONBOARDING ===================== -->
+<div id="splash-screen" class="splash-screen">
+  <div class="splash-content">
+    <div class="splash-logo">
+      <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+      <h1>HealthShorts<span class="accent"> AI</span></h1>
+      <p class="tagline">매일 60초, AI가 만드는 나만의 건강 코칭 숏츠</p>
+    </div>
+    <div class="splash-targets">
+      <div class="target-chip"><i class="fas fa-user"></i> 일반 사용자</div>
+      <div class="target-chip"><i class="fas fa-dumbbell"></i> 헬스 코치</div>
+      <div class="target-chip"><i class="fas fa-building"></i> 디지털 헬스 기업</div>
+    </div>
+    <button class="btn-primary btn-large" id="splash-start-btn">
+      <i class="fas fa-play"></i> 무료로 시작하기
+    </button>
+    <p class="splash-sub">이미 계정이 있으신가요? <a href="#" id="splash-login-link">로그인</a></p>
+  </div>
+  <div class="splash-bg-shapes">
+    <div class="shape s1"></div>
+    <div class="shape s2"></div>
+    <div class="shape s3"></div>
+  </div>
+</div>
+
+<!-- ===================== ONBOARDING FLOW ===================== -->
+<div id="onboarding-screen" class="onboarding-screen hidden">
+  <div class="onboarding-container">
+    <div class="onboarding-progress">
+      <div class="progress-bar"><div class="progress-fill" id="ob-progress-fill"></div></div>
+      <span class="progress-label" id="ob-progress-label">1 / 4</span>
+    </div>
+
+    <!-- Step 1: 기본 정보 -->
+    <div class="ob-step active" id="ob-step-1">
+      <div class="ob-icon"><i class="fas fa-user-circle"></i></div>
+      <h2>반갑습니다! 기본 정보를 알려주세요</h2>
+      <p class="ob-desc">맞춤형 건강 숏츠를 만들기 위해 필요해요</p>
+      <div class="form-group">
+        <label>이름</label>
+        <input type="text" id="ob-name" placeholder="이름을 입력하세요" class="form-input" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>나이</label>
+          <input type="number" id="ob-age" placeholder="만 나이" class="form-input" min="10" max="100" />
+        </div>
+        <div class="form-group">
+          <label>성별</label>
+          <select id="ob-gender" class="form-input">
+            <option value="">선택</option>
+            <option value="male">남성</option>
+            <option value="female">여성</option>
+            <option value="other">기타</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>키 (cm)</label>
+          <input type="number" id="ob-height" placeholder="키" class="form-input" min="100" max="250" />
+        </div>
+        <div class="form-group">
+          <label>체중 (kg)</label>
+          <input type="number" id="ob-weight" placeholder="체중" class="form-input" min="20" max="300" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: 건강 목표 -->
+    <div class="ob-step hidden" id="ob-step-2">
+      <div class="ob-icon"><i class="fas fa-bullseye"></i></div>
+      <h2>건강 목표를 선택해주세요</h2>
+      <p class="ob-desc">여러 개 선택 가능합니다</p>
+      <div class="goal-grid" id="ob-goals-grid">
+        <div class="goal-chip" data-value="체중 감량"><i class="fas fa-weight"></i> 체중 감량</div>
+        <div class="goal-chip" data-value="근력 강화"><i class="fas fa-dumbbell"></i> 근력 강화</div>
+        <div class="goal-chip" data-value="스트레스 감소"><i class="fas fa-brain"></i> 스트레스 감소</div>
+        <div class="goal-chip" data-value="수면 개선"><i class="fas fa-moon"></i> 수면 개선</div>
+        <div class="goal-chip" data-value="체력 향상"><i class="fas fa-running"></i> 체력 향상</div>
+        <div class="goal-chip" data-value="영양 개선"><i class="fas fa-apple-alt"></i> 영양 개선</div>
+        <div class="goal-chip" data-value="수분 섭취"><i class="fas fa-tint"></i> 수분 섭취</div>
+        <div class="goal-chip" data-value="혈압 관리"><i class="fas fa-heartbeat"></i> 혈압 관리</div>
+      </div>
+    </div>
+
+    <!-- Step 3: 활동 수준 -->
+    <div class="ob-step hidden" id="ob-step-3">
+      <div class="ob-icon"><i class="fas fa-fire"></i></div>
+      <h2>평소 활동 수준은 어느 정도인가요?</h2>
+      <p class="ob-desc">개인 맞춤형 운동 루틴을 설계해드릴게요</p>
+      <div class="activity-options" id="ob-activity-options">
+        <div class="activity-option" data-value="sedentary">
+          <div class="activity-icon">🛋️</div>
+          <div class="activity-info">
+            <strong>거의 앉아있음</strong>
+            <span>사무직, 하루 대부분 앉아서 생활</span>
+          </div>
+        </div>
+        <div class="activity-option" data-value="light">
+          <div class="activity-icon">🚶</div>
+          <div class="activity-info">
+            <strong>가벼운 활동</strong>
+            <span>주 1-2회 가벼운 운동 또는 산책</span>
+          </div>
+        </div>
+        <div class="activity-option" data-value="moderate">
+          <div class="activity-icon">🏃</div>
+          <div class="activity-info">
+            <strong>보통 활동</strong>
+            <span>주 3-5회 중간 강도 운동</span>
+          </div>
+        </div>
+        <div class="activity-option" data-value="active">
+          <div class="activity-icon">💪</div>
+          <div class="activity-info">
+            <strong>활발한 활동</strong>
+            <span>주 6-7회 고강도 운동</span>
+          </div>
+        </div>
+        <div class="activity-option" data-value="very_active">
+          <div class="activity-icon">🏆</div>
+          <div class="activity-info">
+            <strong>매우 활발</strong>
+            <span>운동선수 수준의 훈련</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: 목표 설정 -->
+    <div class="ob-step hidden" id="ob-step-4">
+      <div class="ob-icon"><i class="fas fa-chart-line"></i></div>
+      <h2>하루 목표를 설정해주세요</h2>
+      <p class="ob-desc">AI가 목표 달성을 위한 숏츠를 만들어드려요</p>
+      <div class="form-group">
+        <label><i class="fas fa-moon"></i> 목표 수면 시간</label>
+        <div class="range-group">
+          <input type="range" id="ob-sleep" min="300" max="600" step="30" value="480" class="range-input" />
+          <span class="range-value" id="ob-sleep-val">8시간 0분</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-tint"></i> 목표 수분 섭취</label>
+        <div class="range-group">
+          <input type="range" id="ob-water" min="1000" max="3500" step="100" value="2000" class="range-input" />
+          <span class="range-value" id="ob-water-val">2,000ml</span>
+        </div>
+      </div>
+      <div class="ob-ready-box">
+        <i class="fas fa-robot"></i>
+        <p>준비가 완료되면 AI가 당신만을 위한<br/>첫 번째 건강 숏츠를 만들어드립니다!</p>
+      </div>
+    </div>
+
+    <div class="ob-nav">
+      <button class="btn-ghost" id="ob-back-btn" style="visibility:hidden">
+        <i class="fas fa-arrow-left"></i> 이전
+      </button>
+      <button class="btn-primary" id="ob-next-btn">
+        다음 <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="app" class="app hidden">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <i class="fas fa-heartbeat"></i>
+        <span>HealthShorts</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="sidebar-user" id="sidebar-user">
+      <div class="user-avatar" id="sidebar-avatar">K</div>
+      <div class="user-info">
+        <strong id="sidebar-name">김지현</strong>
+        <span id="sidebar-goal">체중 감량 · 스트레스 감소</span>
+      </div>
+    </div>
+
+    <ul class="nav-menu">
+      <li class="nav-item active" data-page="dashboard">
+        <i class="fas fa-home"></i><span>대시보드</span>
+      </li>
+      <li class="nav-item" data-page="log">
+        <i class="fas fa-clipboard-list"></i><span>건강 로그</span>
+        <div class="nav-badge" id="log-badge"></div>
+      </li>
+      <li class="nav-item" data-page="generate">
+        <i class="fas fa-magic"></i><span>숏츠 생성</span>
+        <div class="nav-new-badge">NEW</div>
+      </li>
+      <li class="nav-item" data-page="library">
+        <i class="fas fa-film"></i><span>내 숏츠</span>
+      </li>
+      <li class="nav-item" data-page="analytics">
+        <i class="fas fa-chart-line"></i><span>분석</span>
+      </li>
+      <li class="nav-item" data-page="profile">
+        <i class="fas fa-user-cog"></i><span>프로필</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="streak-box">
+        <i class="fas fa-fire"></i>
+        <div>
+          <strong id="streak-count">7</strong>일 연속
+          <span>건강 기록 중!</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+
+    <!-- ---- DASHBOARD PAGE ---- -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 id="dashboard-greeting">좋은 아침이에요, 김지현님! 👋</h1>
+          <p class="page-subtitle" id="dashboard-date">2026년 2월 26일 목요일</p>
+        </div>
+        <button class="btn-primary btn-sm" id="quick-log-btn">
+          <i class="fas fa-plus"></i> 오늘 기록
+        </button>
+      </div>
+
+      <!-- Today Summary Cards -->
+      <div class="stats-grid" id="today-stats">
+        <div class="stat-card" id="stat-water">
+          <div class="stat-icon blue"><i class="fas fa-tint"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">수분 섭취</span>
+            <strong class="stat-value" id="today-water">1,800ml</strong>
+            <div class="stat-bar"><div class="stat-fill blue" id="water-bar" style="width:90%"></div></div>
+            <span class="stat-sub" id="water-sub">목표의 90%</span>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-sleep">
+          <div class="stat-icon purple"><i class="fas fa-moon"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">수면 시간</span>
+            <strong class="stat-value" id="today-sleep">7시간 0분</strong>
+            <div class="stat-bar"><div class="stat-fill purple" id="sleep-bar" style="width:87%"></div></div>
+            <span class="stat-sub" id="sleep-sub">목표의 87%</span>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-exercise">
+          <div class="stat-icon green"><i class="fas fa-running"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">오늘 운동</span>
+            <strong class="stat-value" id="today-exercise">40분</strong>
+            <div class="stat-bar"><div class="stat-fill green" id="exercise-bar" style="width:80%"></div></div>
+            <span class="stat-sub">조깅</span>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-mood">
+          <div class="stat-icon orange"><i class="fas fa-smile"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">기분 점수</span>
+            <strong class="stat-value" id="today-mood">7 / 10</strong>
+            <div class="stat-bar"><div class="stat-fill orange" id="mood-bar" style="width:70%"></div></div>
+            <span class="stat-sub">보통 이상</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Coach Message -->
+      <div class="ai-coach-card" id="ai-coach-card">
+        <div class="coach-header">
+          <div class="coach-avatar"><i class="fas fa-robot"></i></div>
+          <div>
+            <strong>AI 건강 코치</strong>
+            <span class="live-badge">LIVE</span>
+          </div>
+          <button class="btn-ghost btn-sm" id="refresh-coach-btn"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <div class="coach-message" id="coach-message">
+          <div class="typing-dots" id="coach-typing">
+            <span></span><span></span><span></span>
+          </div>
+          <p id="coach-text" class="hidden"></p>
+        </div>
+        <div class="coach-actions" id="coach-actions" style="display:none">
+          <button class="btn-accent btn-sm" id="generate-from-coach-btn">
+            <i class="fas fa-film"></i> 이 내용으로 숏츠 만들기
+          </button>
+        </div>
+      </div>
+
+      <!-- Today's Shorts + Quick Access -->
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-fire"></i> 오늘의 추천 숏츠</h3>
+            <a href="#" class="card-link" data-goto="library">전체 보기</a>
+          </div>
+          <div class="shorts-preview-list" id="dashboard-shorts-list">
+            <div class="loading-skeleton"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-chart-bar"></i> 주간 건강 점수</h3>
+          </div>
+          <div class="chart-container" style="height:200px">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Health Insight Ticker -->
+      <div class="insight-ticker">
+        <div class="ticker-label"><i class="fas fa-lightbulb"></i> 인사이트</div>
+        <div class="ticker-track" id="ticker-track">
+          <span>수면 25분 부족 → 인지 능력 15% 저하 위험</span>
+          <span>수분 목표 90% 달성 → 이번 주 최고 기록!</span>
+          <span>스트레스 점수 개선 → 운동 루틴 효과 나타나는 중</span>
+          <span>체중 0.4kg 감소 추세 → 목표 달성까지 D-14</span>
+          <span>수면 25분 부족 → 인지 능력 15% 저하 위험</span>
+          <span>수분 목표 90% 달성 → 이번 주 최고 기록!</span>
+          <span>스트레스 점수 개선 → 운동 루틴 효과 나타나는 중</span>
+          <span>체중 0.4kg 감소 추세 → 목표 달성까지 D-14</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- HEALTH LOG PAGE ---- -->
+    <section class="page hidden" id="page-log">
+      <div class="page-header">
+        <div>
+          <h1>건강 로그</h1>
+          <p class="page-subtitle">매일 기록으로 AI가 더 정확한 숏츠를 만들어요</p>
+        </div>
+        <button class="btn-primary btn-sm" id="add-log-btn">
+          <i class="fas fa-plus"></i> 오늘 기록하기
+        </button>
+      </div>
+
+      <!-- Log Form Modal Trigger -->
+      <div class="log-calendar-strip" id="log-calendar-strip">
+        <!-- 동적으로 생성됨 -->
+      </div>
+
+      <div class="log-list" id="log-list">
+        <div class="loading-skeleton"></div>
+        <div class="loading-skeleton"></div>
+      </div>
+    </section>
+
+    <!-- ---- AI GENERATE PAGE ---- -->
+    <section class="page hidden" id="page-generate">
+      <div class="page-header">
+        <div>
+          <h1><i class="fas fa-magic"></i> AI 숏츠 생성</h1>
+          <p class="page-subtitle">당신의 건강 데이터를 분석하여 60초 맞춤 숏츠를 만들어드립니다</p>
+        </div>
+      </div>
+
+      <div class="generate-container">
+        <!-- Left: Settings -->
+        <div class="generate-settings">
+          <div class="settings-card">
+            <h3><i class="fas fa-sliders-h"></i> 생성 설정</h3>
+            <div class="form-group">
+              <label>카테고리</label>
+              <div class="category-chips" id="gen-category-chips">
+                <div class="cat-chip active" data-value="general"><i class="fas fa-star"></i> 종합</div>
+                <div class="cat-chip" data-value="nutrition"><i class="fas fa-apple-alt"></i> 영양</div>
+                <div class="cat-chip" data-value="exercise"><i class="fas fa-dumbbell"></i> 운동</div>
+                <div class="cat-chip" data-value="sleep"><i class="fas fa-moon"></i> 수면</div>
+                <div class="cat-chip" data-value="stress"><i class="fas fa-brain"></i> 스트레스</div>
+                <div class="cat-chip" data-value="hydration"><i class="fas fa-tint"></i> 수분</div>
+                <div class="cat-chip" data-value="mindset"><i class="fas fa-heart"></i> 마인드셋</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>톤 & 스타일</label>
+              <select class="form-input" id="gen-tone">
+                <option value="motivational">동기부여형 🔥</option>
+                <option value="educational">교육/정보형 📚</option>
+                <option value="challenge">챌린지형 💪</option>
+                <option value="calm">차분한/명상형 🧘</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>타겟 대상</label>
+              <select class="form-input" id="gen-target">
+                <option value="self">나 자신을 위해</option>
+                <option value="followers">팔로워/구독자</option>
+                <option value="clients">코칭 클라이언트</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>추가 요청사항</label>
+              <textarea class="form-input" id="gen-custom" rows="3" placeholder="예: 오늘 특히 스트레스가 많았어요. 5분 호흡 운동 관련 내용으로 만들어주세요"></textarea>
+            </div>
+            <div class="data-toggle">
+              <label class="toggle-label">
+                <input type="checkbox" id="use-my-data" checked />
+                <span class="toggle-switch"></span>
+                내 건강 데이터 활용
+              </label>
+              <span class="toggle-desc">체크하면 AI가 당신의 실제 데이터를 분석해 개인화된 숏츠를 만들어요</span>
+            </div>
+            <button class="btn-primary btn-full" id="generate-btn">
+              <i class="fas fa-magic"></i> AI로 숏츠 생성하기
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Preview -->
+        <div class="generate-preview">
+          <div class="preview-phone" id="preview-phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" id="phone-screen">
+              <div class="phone-empty-state" id="phone-empty">
+                <i class="fas fa-film"></i>
+                <p>생성 버튼을 눌러<br/>AI 숏츠를 만들어보세요!</p>
+              </div>
+              <div class="phone-content hidden" id="phone-content">
+                <div class="shorts-card-phone">
+                  <div class="shorts-category-badge" id="preview-category-badge">💧 수분</div>
+                  <div class="shorts-hook" id="preview-hook">훅 라인이 여기 표시됩니다</div>
+                  <div class="shorts-script" id="preview-script">스크립트 내용...</div>
+                  <div class="shorts-actions-list" id="preview-actions"></div>
+                  <div class="shorts-cta" id="preview-cta">지금 실천해보세요!</div>
+                </div>
+              </div>
+              <div class="phone-generating hidden" id="phone-generating">
+                <div class="gen-animation">
+                  <div class="gen-circle c1"></div>
+                  <div class="gen-circle c2"></div>
+                  <div class="gen-circle c3"></div>
+                </div>
+                <p class="gen-status" id="gen-status">데이터 분석 중...</p>
+              </div>
+            </div>
+            <div class="phone-home-bar"></div>
+          </div>
+
+          <div class="preview-actions" id="preview-actions-bar" style="display:none">
+            <button class="btn-primary" id="save-shorts-btn">
+              <i class="fas fa-save"></i> 저장하기
+            </button>
+            <button class="btn-ghost" id="share-shorts-btn">
+              <i class="fas fa-share-alt"></i> 공유
+            </button>
+            <button class="btn-ghost" id="regenerate-btn">
+              <i class="fas fa-redo"></i> 재생성
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- LIBRARY PAGE ---- -->
+    <section class="page hidden" id="page-library">
+      <div class="page-header">
+        <div>
+          <h1><i class="fas fa-film"></i> 내 숏츠 라이브러리</h1>
+          <p class="page-subtitle">생성된 콘텐츠를 관리하고 배포하세요</p>
+        </div>
+        <button class="btn-primary btn-sm" onclick="navigateTo('generate')">
+          <i class="fas fa-plus"></i> 새로 만들기
+        </button>
+      </div>
+
+      <div class="library-filters">
+        <button class="filter-btn active" data-filter="all">전체</button>
+        <button class="filter-btn" data-filter="published">게시됨</button>
+        <button class="filter-btn" data-filter="draft">초안</button>
+        <button class="filter-btn" data-filter="nutrition">영양</button>
+        <button class="filter-btn" data-filter="sleep">수면</button>
+        <button class="filter-btn" data-filter="stress">스트레스</button>
+        <button class="filter-btn" data-filter="hydration">수분</button>
+      </div>
+
+      <div class="library-stats-bar">
+        <div class="lib-stat"><i class="fas fa-film"></i> <strong id="lib-total-count">0</strong>개 숏츠</div>
+        <div class="lib-stat"><i class="fas fa-eye"></i> 누적 <strong id="lib-total-views">0</strong>회 조회</div>
+        <div class="lib-stat"><i class="fas fa-heart"></i> <strong id="lib-total-likes">0</strong>개 좋아요</div>
+      </div>
+
+      <div class="library-grid" id="library-grid">
+        <div class="loading-skeleton card-skeleton"></div>
+        <div class="loading-skeleton card-skeleton"></div>
+        <div class="loading-skeleton card-skeleton"></div>
+      </div>
+    </section>
+
+    <!-- ---- ANALYTICS PAGE ---- -->
+    <section class="page hidden" id="page-analytics">
+      <div class="page-header">
+        <div>
+          <h1><i class="fas fa-chart-line"></i> 건강 분석</h1>
+          <p class="page-subtitle">데이터로 보는 나의 건강 트렌드</p>
+        </div>
+        <div class="period-select">
+          <button class="period-btn active" data-period="7">7일</button>
+          <button class="period-btn" data-period="14">14일</button>
+          <button class="period-btn" data-period="30">30일</button>
+        </div>
+      </div>
+
+      <!-- Health Score Card -->
+      <div class="health-score-card">
+        <div class="score-circle" id="health-score-circle">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#1e293b" stroke-width="8"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="url(#scoreGrad)" stroke-width="8"
+              stroke-dasharray="264" stroke-dashoffset="66" stroke-linecap="round"
+              transform="rotate(-90 50 50)" id="score-arc"/>
+            <defs>
+              <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="score-inner">
+            <strong id="score-number">75</strong>
+            <span>건강 점수</span>
+          </div>
+        </div>
+        <div class="score-breakdown">
+          <div class="score-item">
+            <span class="score-label"><i class="fas fa-tint blue"></i> 수분</span>
+            <div class="mini-bar"><div class="mini-fill blue" style="width:88%"></div></div>
+            <span class="score-pct">88%</span>
+          </div>
+          <div class="score-item">
+            <span class="score-label"><i class="fas fa-moon purple"></i> 수면</span>
+            <div class="mini-bar"><div class="mini-fill purple" style="width:72%"></div></div>
+            <span class="score-pct">72%</span>
+          </div>
+          <div class="score-item">
+            <span class="score-label"><i class="fas fa-running green"></i> 운동</span>
+            <div class="mini-bar"><div class="mini-fill green" style="width:65%"></div></div>
+            <span class="score-pct">65%</span>
+          </div>
+          <div class="score-item">
+            <span class="score-label"><i class="fas fa-smile orange"></i> 기분</span>
+            <div class="mini-bar"><div class="mini-fill orange" style="width:71%"></div></div>
+            <span class="score-pct">71%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>체중 변화</h3>
+          <div class="chart-container" style="height:220px">
+            <canvas id="weightChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>수분 섭취</h3>
+          <div class="chart-container" style="height:220px">
+            <canvas id="waterChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>수면 패턴</h3>
+          <div class="chart-container" style="height:220px">
+            <canvas id="sleepChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>기분 & 스트레스</h3>
+          <div class="chart-container" style="height:220px">
+            <canvas id="moodChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Insights -->
+      <div class="insights-section">
+        <h3><i class="fas fa-lightbulb"></i> AI 인사이트</h3>
+        <div class="insights-list" id="insights-list">
+          <!-- 동적 생성 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- PROFILE PAGE ---- -->
+    <section class="page hidden" id="page-profile">
+      <div class="page-header">
+        <div>
+          <h1><i class="fas fa-user-cog"></i> 프로필 설정</h1>
+          <p class="page-subtitle">건강 정보를 최신으로 유지해주세요</p>
+        </div>
+        <button class="btn-primary btn-sm" id="save-profile-btn">
+          <i class="fas fa-save"></i> 저장
+        </button>
+      </div>
+
+      <div class="profile-container">
+        <div class="profile-avatar-section">
+          <div class="profile-avatar-large" id="profile-avatar-large">K</div>
+          <div>
+            <h2 id="profile-name-display">김지현</h2>
+            <p id="profile-bmi-display">BMI: 21.3 (정상)</p>
+          </div>
+        </div>
+
+        <div class="profile-form-grid">
+          <div class="form-group">
+            <label>이름</label>
+            <input type="text" class="form-input" id="profile-name" value="김지현" />
+          </div>
+          <div class="form-group">
+            <label>나이</label>
+            <input type="number" class="form-input" id="profile-age" value="32" />
+          </div>
+          <div class="form-group">
+            <label>성별</label>
+            <select class="form-input" id="profile-gender">
+              <option value="male">남성</option>
+              <option value="female" selected>여성</option>
+              <option value="other">기타</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>키 (cm)</label>
+            <input type="number" class="form-input" id="profile-height" value="165" />
+          </div>
+          <div class="form-group">
+            <label>체중 (kg)</label>
+            <input type="number" class="form-input" id="profile-weight" value="58" />
+          </div>
+          <div class="form-group">
+            <label>활동 수준</label>
+            <select class="form-input" id="profile-activity">
+              <option value="sedentary">거의 앉아있음</option>
+              <option value="light">가벼운 활동</option>
+              <option value="moderate" selected>보통 활동</option>
+              <option value="active">활발한 활동</option>
+              <option value="very_active">매우 활발</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>건강 목표</label>
+          <div class="goal-grid" id="profile-goals-grid">
+            <div class="goal-chip selected" data-value="체중 감량"><i class="fas fa-weight"></i> 체중 감량</div>
+            <div class="goal-chip" data-value="근력 강화"><i class="fas fa-dumbbell"></i> 근력 강화</div>
+            <div class="goal-chip selected" data-value="스트레스 감소"><i class="fas fa-brain"></i> 스트레스 감소</div>
+            <div class="goal-chip selected" data-value="수면 개선"><i class="fas fa-moon"></i> 수면 개선</div>
+            <div class="goal-chip" data-value="체력 향상"><i class="fas fa-running"></i> 체력 향상</div>
+            <div class="goal-chip" data-value="영양 개선"><i class="fas fa-apple-alt"></i> 영양 개선</div>
+            <div class="goal-chip" data-value="수분 섭취"><i class="fas fa-tint"></i> 수분 섭취</div>
+            <div class="goal-chip" data-value="혈압 관리"><i class="fas fa-heartbeat"></i> 혈압 관리</div>
+          </div>
+        </div>
+
+        <div class="profile-goals-daily">
+          <div class="form-group">
+            <label><i class="fas fa-moon"></i> 목표 수면 (분)</label>
+            <input type="number" class="form-input" id="profile-sleep" value="480" />
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-tint"></i> 목표 수분 (ml)</label>
+            <input type="number" class="form-input" id="profile-water" value="2000" />
+          </div>
+        </div>
+
+        <div class="danger-zone">
+          <h4>계정 관리</h4>
+          <button class="btn-danger btn-sm" id="reset-data-btn">
+            <i class="fas fa-trash"></i> 데모 데이터 초기화
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- Health Log Modal -->
+<div class="modal-overlay hidden" id="log-modal-overlay">
+  <div class="modal" id="log-modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-clipboard-list"></i> 오늘의 건강 기록</h3>
+      <button class="modal-close" id="close-log-modal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-date" id="log-modal-date">2026년 2월 26일</div>
+      <div class="log-form-grid">
+        <div class="form-group">
+          <label><i class="fas fa-weight"></i> 체중 (kg)</label>
+          <input type="number" step="0.1" class="form-input" id="log-weight" placeholder="58.0" />
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-heartbeat"></i> 심박수 (bpm)</label>
+          <input type="number" class="form-input" id="log-heart" placeholder="72" />
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-heart"></i> 혈압 수축기</label>
+          <input type="number" class="form-input" id="log-bp-sys" placeholder="120" />
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-heart"></i> 혈압 이완기</label>
+          <input type="number" class="form-input" id="log-bp-dia" placeholder="80" />
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-moon"></i> 수면 시간 (분)</label>
+          <input type="number" class="form-input" id="log-sleep" placeholder="480" />
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-tint"></i> 수분 섭취 (ml)</label>
+          <input type="number" class="form-input" id="log-water" placeholder="2000" />
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-running"></i> 운동 종류</label>
+          <input type="text" class="form-input" id="log-exercise-type" placeholder="조깅, 요가, 수영..." />
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-clock"></i> 운동 시간 (분)</label>
+          <input type="number" class="form-input" id="log-exercise-min" placeholder="30" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>기분 점수 <span id="mood-label-val">7</span>/10</label>
+        <input type="range" min="1" max="10" value="7" class="range-input" id="log-mood" />
+        <div class="mood-emojis">
+          <span>😞</span><span>😐</span><span>😊</span><span>😄</span><span>🤩</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>오늘 메모</label>
+        <textarea class="form-input" id="log-note" rows="3" placeholder="오늘 어땠나요?"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="cancel-log-btn">취소</button>
+      <button class="btn-primary" id="save-log-btn">
+        <i class="fas fa-check"></i> 기록 저장
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Shorts Detail Modal -->
+<div class="modal-overlay hidden" id="shorts-modal-overlay">
+  <div class="modal modal-wide" id="shorts-modal">
+    <div class="modal-header">
+      <h3 id="shorts-modal-title">숏츠 상세</h3>
+      <button class="modal-close" id="close-shorts-modal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="shorts-detail-layout">
+        <div class="shorts-detail-phone">
+          <div class="preview-phone mini">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="shorts-card-phone">
+                <div class="shorts-category-badge" id="sm-category"></div>
+                <div class="shorts-hook" id="sm-hook"></div>
+                <div class="shorts-script" id="sm-script"></div>
+                <div class="shorts-actions-list" id="sm-actions"></div>
+              </div>
+            </div>
+            <div class="phone-home-bar"></div>
+          </div>
+        </div>
+        <div class="shorts-detail-info">
+          <div class="detail-meta">
+            <div class="meta-item"><i class="fas fa-eye"></i> <span id="sm-views">0</span> 조회</div>
+            <div class="meta-item"><i class="fas fa-heart"></i> <span id="sm-likes">0</span> 좋아요</div>
+            <div class="meta-item"><i class="fas fa-calendar"></i> <span id="sm-date"></span></div>
+          </div>
+          <div class="detail-status">
+            <span class="status-badge" id="sm-status-badge">게시됨</span>
+          </div>
+          <div class="detail-script-full">
+            <h4>전체 스크립트</h4>
+            <div class="script-text" id="sm-full-script"></div>
+          </div>
+          <div class="detail-actions-list">
+            <h4>실천 항목</h4>
+            <ul id="sm-action-items"></ul>
+          </div>
+          <div class="modal-btn-row">
+            <button class="btn-primary" id="sm-publish-btn">
+              <i class="fas fa-paper-plane"></i> 게시하기
+            </button>
+            <button class="btn-ghost" id="sm-delete-btn">
+              <i class="fas fa-trash"></i> 삭제
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="toast-msg">저장되었습니다</span>
+</div>
+
+<!-- Mobile Bottom Nav -->
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bottom-nav-item active" data-page="dashboard"><i class="fas fa-home"></i><span>홈</span></div>
+  <div class="bottom-nav-item" data-page="log"><i class="fas fa-clipboard-list"></i><span>로그</span></div>
+  <div class="bottom-nav-item generate-fab" data-page="generate"><i class="fas fa-magic"></i></div>
+  <div class="bottom-nav-item" data-page="library"><i class="fas fa-film"></i><span>숏츠</span></div>
+  <div class="bottom-nav-item" data-page="analytics"><i class="fas fa-chart-line"></i><span>분석</span></div>
+</nav>
+
+<script src="js/app.js"></script>
+</body>
+</html>
